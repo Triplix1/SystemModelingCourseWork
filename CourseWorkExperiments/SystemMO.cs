@@ -78,6 +78,7 @@ public class SystemMO : Element, IStatisticable
         var next = NextElements[random.Next(NextElements.Count)];
         
         next.InAct(client);
+
     }
 
     public void PrintResult(double time)
