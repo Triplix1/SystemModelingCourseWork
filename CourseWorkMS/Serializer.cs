@@ -4,12 +4,12 @@ namespace CourseWorkMS;
 
 public class Serializer
 {
-    public static void SerializeDictionaryToFile<TKey, TValue>(Dictionary<TKey, TValue> dictionary, string filePath)
+    public static void SerializeDictionaryToFile<T>(T objectToSerialize, string filePath)
     {
         try
         {
             // Serialize the dictionary to a JSON string
-            string json = JsonSerializer.Serialize(dictionary, new JsonSerializerOptions
+            string json = JsonSerializer.Serialize(objectToSerialize, new JsonSerializerOptions
             {
                 WriteIndented = true // Makes the JSON output more readable
             });

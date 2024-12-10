@@ -89,10 +89,6 @@ public class SystemMO : Element
             return;
         
         var nonBlockedElement = NextElementTransitions.Where(t => !t.BlockingPredicate(truck, t.System)).ToArray();
-        if (nonBlockedElement.Any(c => c.System.Name == "Excavator 2 system"))
-        {
-            Console.WriteLine();
-        }
         var next = nonBlockedElement[random.Next(nonBlockedElement.Count())];
         
         next.System.InAct(truck);

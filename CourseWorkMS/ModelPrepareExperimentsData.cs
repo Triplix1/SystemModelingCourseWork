@@ -1,20 +1,18 @@
-﻿using CourseWorkMSExperiments;
+﻿namespace CourseWorkMS;
 
-namespace CourseWorkMS;
-
-public class ModelWithExperiments
+public class ModelPrepareExperimentsData
 {
     double _timeNext, _timeCurr;
     private Element _currentElement;
     private List<SystemMO> _systems;
     private List<Truck> _clients;
     private List<SystemMOStatisticable> _statisticable; 
-    Dictionary<double, double> queueValues = new();
+    Dictionary<double, double> BusyValues = new();
     private double _time = 0d;
     private double _timeStep = 100d;
 
     
-    public ModelWithExperiments(List<SystemMO> elements)
+    public ModelPrepareExperimentsData(List<SystemMO> elements)
     {
         _systems = elements;
         _statisticable = new List<SystemMOStatisticable>(_systems.OfType<SystemMOStatisticable>());
@@ -53,18 +51,21 @@ public class ModelWithExperiments
             
             if (_timeCurr > _time + _timeStep)
             {
-                queueValues.Add(_timeCurr, _systems.Sum(s => s.MeanTrucksCount * time / _timeCurr));
-                _time = _timeCurr;
+                BusyValues.Add(_time + _timeStep,
+                    _statisticable.Take(3).Sum(s => s.TotalBusyTime / _timeCurr) / 3 +
+                    _statisticable.Last().TotalBusyTime / _timeCurr);
+
+                _time += _timeStep;
             }
 
             _currentElement.OutAct();
-            
+
             PrintInfo();
         }
 
         PrintResult(time);
 
-        Serializer.SerializeDictionaryToFile(queueValues, "First1.json");
+        Serializer.SerializeDictionaryToFile(BusyValues, "Test.json");
     }
 
     private void PrintInfo()

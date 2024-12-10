@@ -60,33 +60,13 @@ public class Model
             e.PrintInfo();
         }
     }
-
+    
     private void PrintResult(double time)
     {
-        var avgTrucksCount = 0d;
-        var avgBusyTime = 0d;
-        foreach (var system in _statisticable.Take(3))
+        foreach (var system in _statisticable)
         {
             Console.WriteLine();
             system.PrintResult(time);
-            avgTrucksCount += system.GetStatistic();
-            avgBusyTime += system.TotalBusyTime / time;
         }
-
-        Console.WriteLine();
-        Console.WriteLine($"Excavators avg trucks count: {avgTrucksCount / 3:F2}");
-        Console.WriteLine($"Excavators avg busy time: {avgBusyTime / 3:F2}");
-        
-        Console.WriteLine();
-        _statisticable.Last().PrintResult(time);
     }
-    
-    // private void PrintResult(double time)
-    // {
-    //     foreach (var system in _statisticable)
-    //     {
-    //         Console.WriteLine();
-    //         system.PrintResult(time);
-    //     }
-    // }
 }

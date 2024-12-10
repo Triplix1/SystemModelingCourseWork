@@ -30,7 +30,9 @@ public class SystemMOStatisticable: SystemMO, IStatisticable
         TotalBusyTime += TimeCurrent - _lastBusyTime;
         _lastBusyTime = TimeCurrent;
 
-        return base.OutAct();
+        var result = base.OutAct();
+
+        return result;
     }
     
     public void PrintResult(double time)

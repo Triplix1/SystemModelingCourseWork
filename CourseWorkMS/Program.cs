@@ -6,11 +6,13 @@ class Program
     {
         #region Params
 
+        var testsCount = 20;
+
         var twentyTonsCount = 1;
         var fiftyTonsCount = 1;
         var excavatorsCount = 3;
         var totalCount = excavatorsCount * (twentyTonsCount + fiftyTonsCount);
-        
+
         var excavatorDelays = new Dictionary<TruckType, double>();
         excavatorDelays.Add(TruckType.TwentyTons, 5d);
         excavatorDelays.Add(TruckType.FiftyTons, 10d);
@@ -25,13 +27,13 @@ class Program
 
         var moveToCrushDelays = new Dictionary<TruckType, double>();
         moveToCrushDelays.Add(TruckType.TwentyTons, 2.5);
-        moveToCrushDelays.Add(TruckType.FiftyTons, 9d);
-        
+        moveToCrushDelays.Add(TruckType.FiftyTons, 3d);
+
         var excavatorsDistribution = Distribution.Exponential;
         var crushingDistribution = Distribution.Exponential;
         var movingToCrushDistrubution = Distribution.None;
         var movingToExcavatorsDistrubution = Distribution.None;
-        
+
         var excavatorsParams = new DelayParams(excavatorDelays, excavatorsDistribution);
         var crushingParams = new DelayParams(crushingDelays, crushingDistribution);
         var moveToExcavatorParams = new DelayParams(moveToExDelays, movingToExcavatorsDistrubution);
@@ -44,7 +46,8 @@ class Program
         var moveToExcavatorProcesses = new List<Process>();
         for (int i = 0; i < totalCount; i++)
         {
-            var process = new Process("Move to Excavator process " + (i + 1), moveToExcavatorParams.Delays, moveToExcavatorParams.Distribution);
+            var process = new Process("Move to Excavator process " + (i + 1), moveToExcavatorParams.Delays,
+                moveToExcavatorParams.Distribution);
             moveToExcavatorProcesses.Add(process);
         }
 
@@ -53,7 +56,7 @@ class Program
             moveToExcavatorsTransition);
 
         #endregion
-        
+
         #region Crushing
 
         var crushingProcess = new Process("Crushing process", crushingParams.Delays, crushingParams.Distribution);
@@ -65,7 +68,8 @@ class Program
             BlockingPredicate = (t, s) => false
         };
         var crushingSystem =
-            new SystemMOStatisticable("Crushing system", [crushingProcess], crushingQueue, [moveToMovingToExcavatorsTransition]);
+            new SystemMOStatisticable("Crushing system", [crushingProcess], crushingQueue,
+                [moveToMovingToExcavatorsTransition]);
 
         #endregion
 
@@ -74,7 +78,8 @@ class Program
         var moveToCrushProcesses = new List<Process>();
         for (int i = 0; i < totalCount; i++)
         {
-            var process = new Process("Move to Crush process " + (i + 1), moveToCrushParams.Delays, moveToCrushParams.Distribution);
+            var process = new Process("Move to Crush process " + (i + 1), moveToCrushParams.Delays,
+                moveToCrushParams.Distribution);
             moveToCrushProcesses.Add(process);
         }
 
@@ -88,27 +93,33 @@ class Program
             new SystemMO("Moving to crushing system", moveToCrushProcesses, [moveToCrushingTransition]);
 
         #endregion
-            
+
         #region Excavators
 
-        var firstExcavatorProcess = new Process("Excavator 1 process", excavatorsParams.Delays, excavatorsParams.Distribution);
+        var firstExcavatorProcess = new Process("Excavator 1 process", excavatorsParams.Delays,
+            excavatorsParams.Distribution);
         var firstExcavatorQueue = new Queue();
         var moveToMovingToCrushTransition = new NextElementTransition()
         {
             System = movingToCrushSystem,
             BlockingPredicate = (t, s) => false
         };
-        var firstExcavator = new SystemMOStatisticable("Excavator 1 system", [firstExcavatorProcess], firstExcavatorQueue,
+        var firstExcavator = new SystemMOStatisticable("Excavator 1 system", [firstExcavatorProcess],
+            firstExcavatorQueue,
             [moveToMovingToCrushTransition]);
 
-        var secondExcavatorProcess = new Process("Excavator 2 process", excavatorsParams.Delays, excavatorsParams.Distribution);
+        var secondExcavatorProcess = new Process("Excavator 2 process", excavatorsParams.Delays,
+            excavatorsParams.Distribution);
         var secondExcavatorQueue = new Queue();
-        var secondExcavator = new SystemMOStatisticable("Excavator 2 system", [secondExcavatorProcess], secondExcavatorQueue,
+        var secondExcavator = new SystemMOStatisticable("Excavator 2 system", [secondExcavatorProcess],
+            secondExcavatorQueue,
             [moveToMovingToCrushTransition]);
 
-        var thirdExcavatorProcess = new Process("Excavator 3 process", excavatorsParams.Delays, excavatorsParams.Distribution);
+        var thirdExcavatorProcess = new Process("Excavator 3 process", excavatorsParams.Delays,
+            excavatorsParams.Distribution);
         var thirdExcavatorQueue = new Queue();
-        var thirdExcavator = new SystemMOStatisticable("Excavator 3 system", [thirdExcavatorProcess], thirdExcavatorQueue,
+        var thirdExcavator = new SystemMOStatisticable("Excavator 3 system", [thirdExcavatorProcess],
+            thirdExcavatorQueue,
             [moveToMovingToCrushTransition]);
 
         var firstExcavatorTrucks = new List<Truck>();
@@ -189,7 +200,7 @@ class Program
         };
 
         var model = new Model(systems);
-        model.Simulate(10000);
+        model.Simulate(12000);
 
         #endregion
     }
